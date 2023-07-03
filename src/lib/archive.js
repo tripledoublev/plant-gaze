@@ -58,7 +58,6 @@ const resized = [
 "assets/resized/20230624_153719.webp",
 "assets/resized/20230624_154222.webp",
 "assets/resized/20230624_154725.webp",
-"assets/resized/20230624_155227.webp",
 "assets/resized/20230624_155730.webp",
 "assets/resized/20230624_160233.webp",
 "assets/resized/20230624_160735.webp",
