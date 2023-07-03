@@ -1,11 +1,15 @@
 <script>
+  import { createEventDispatcher } from "svelte";
+  
   export let img;
   export let subtitle;
   export let data;
 
-  
+  const dispatch = createEventDispatcher();
+
   let dateTime;
-  let showSubtitles = false;
+  let subtitleCount = 0;
+  let archiveMode;
 
   function extractDateTime(filename) {
     const dateRegex = /\d{8}/; 
@@ -28,30 +32,34 @@
   // Reactive statement to automatically extract date and time whenever img changes
   $: dateTime = img ? extractDateTime(img) : null;
 
+  function handleClick() {
+    subtitleCount = (subtitleCount + 1) % 4; // This will cycle the state through 0, 1, 2
+    if (subtitleCount === 2 || subtitleCount === 3) {
+      dispatch("imageClicked", 1);
+    } else {
+      dispatch("imageClicked", 0);
+    }
+  }
 
 </script>
 
 <div
   class='container'
-  on:click={() => (showSubtitles = !showSubtitles)}
-  on:keypress={() => (showSubtitles = !showSubtitles)}
+  on:click={handleClick}
+  on:keypress={handleClick}
 >
 <div class="center-image-container">
-  <img class="center-image" src={img} alt={subtitle} />
+  <img class={subtitleCount === 2 || subtitleCount === 0 ? 'full-image' : 'center-image'} src={img} alt={subtitle} />
 </div>
 
-  {#if showSubtitles}
-    <p class="subs">{subtitle}</p>
-  {/if}
+{#if subtitleCount === 1 || subtitleCount === 2}
+<p class={subtitleCount === 2 ? 'specialSubs' : 'subs'}>{subtitle}</p>
+{/if}
 </div>
 
-{#if showSubtitles}
+{#if subtitleCount !== 0}
 <p class='topRight'>Image: {data.imageIndex} / {data.imageLength}</p>
-  {#if data.language === true}
-  <p class='topLeft'>Texte: {data.textIndex + 1} / {data.texteLength}</p>
-  {:else}
   <p class='topLeft'>Text: {data.textIndex + 1} / {data.textLength}</p>
-  {/if}
   {#if dateTime}
   <p class="bottomLeft">Date: {dateTime.date}</p>
   <p class="bottomRight">{data.language === true ? 'Heure:' : 'Time:'} {dateTime.time}</p>
@@ -65,6 +73,7 @@
   height: 100%; 
   width: 100%; 
   text-align: center;
+  overflow: hidden;
 }
 
 .center-image-container {
@@ -75,6 +84,11 @@
   width: 60%;
   height: auto;
 }
+
+.full-image {
+  width:100vw;
+  height: 100vh;
+}
   .subs {
     position: absolute;
     width: 90%;
@@ -84,12 +98,27 @@
     font-family:Arial, 'Times New Roman', serif;
     bottom:5vh;
   }
+  .specialSubs {
+    position: absolute;
+    width: 90%;
+    text-align: center;
+    font-size: 4.5rem;
+    font-weight: bolder;
+    font-family:Arial, 'Times New Roman', serif;
+    color: red;
+    -webkit-text-stroke: 2px black;
+    left:5%;
+  }
+
   @media (min-width:1400px) {
     .center-image {
   width: 100%;
     }
     .subs {
-      bottom:4vh;
+      bottom:2vh;
+    }
+    .specialSubs {
+      font-size:6rem;
     }
   }
   @media (max-width: 600px) {
@@ -98,10 +127,16 @@
       width: 200vh;
       transform: rotate(90deg);
     }
+    .full-image {
+      width:100%;
+    }
     .subs {
       max-width:92.5vw;
       font-size:1.25rem;
       bottom:3rem;
+    }
+    .specialSubs {
+      font-size:2rem;
     }
   }
   .topLeft,
