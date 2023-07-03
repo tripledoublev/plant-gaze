@@ -60,7 +60,7 @@
     if (showPiece) {
       imageInterval = setInterval(() => {
         imageIndex = (imageIndex + 1) % currentImage.length;
-      }, archivalMode ? 883 / 16 : 883);
+      }, archivalMode ? 80 : 883);
     }
   }
 
@@ -75,7 +75,7 @@
 
     const textInterval = setInterval(() => {
       textIndex = (textIndex + 1) % currentText.length; // This will cycle through the texts
-    }, 4000); // Change every 3 seconds
+    }, 5000);
 
     return () => {
       clearInterval(imageInterval); // Clear interval when component unmounts
