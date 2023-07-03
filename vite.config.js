@@ -4,6 +4,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 const isDev = process.env.NODE_ENV === 'development';
 
 export default defineConfig({
+  base: "./",
   server: {
     host: isDev ? '0.0.0.0' : 'localhost'
   },
